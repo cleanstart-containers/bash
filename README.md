@@ -4,37 +4,26 @@ The CleanStart Bash image provides a production-ready, security-hardened contain
 
 📌 **Base Foundation**: Production-ready container from cleanstart.
 
-**Image Path**: `public.ecr.aws/your-alias/bash`
+**Image Path**: `ghcr.io/cleanstart-containers/bash`
+
 **Registry**: cleanstart Registry
-
-## Key Features
-Core capabilities and strengths of this container
-
-
-
-## Common Use Cases
-Typical scenarios where this container excels
-
 
 
 ## Pull Latest Image
 Download the container image from the registry
 
 ```bash
-docker pull public.ecr.aws/your-alias/bash:bash
+docker pull ghcr.io/cleanstart-containers/bash:latest
 ```
 ```bash
-docker pull public.ecr.aws/your-alias/bash:container
-```
-```bash
-docker pull public.ecr.aws/your-alias/bash:enterprise
+docker pull ghcr.io/cleanstart-containers/bash:latest-dev
 ```
 
 ## Basic Run
 Run the container with basic configuration
 
 ```bash
-docker run -it --name bash public.ecr.aws/your-alias/bash:latest
+docker run -it --rm --name bash ghcr.io/cleanstart-containers/bash:latest
 ```
 
 ## Production Deployment
@@ -45,33 +34,23 @@ docker run -d --name bash-prod \
   --security-opt=no-new-privileges \
   --user 1000:1000 \
   --restart unless-stopped \
-  public.ecr.aws/your-alias/bash:latest
+  ghcr.io/cleanstart-containers/bash:latest -c "sleep infinity"
 ```
 
 Volume Mount Mount local directory for persistent data
 
 ```bash
-docker run -v /app:/app public.ecr.aws/your-alias/bash:latest
+mkdir -p /tmp/apptest && echo "hello from host" > /tmp/apptest/test.txt
+docker run --rm -v /tmp/apptest:/app ghcr.io/cleanstart-containers/bash:latest -c "cat /app/test.txt"
 ```
 
 Port Forwarding Run with custom port mappings
 
 ```bash
-docker run -p 8080:8080 public.ecr.aws/your-alias/bash:latest
+docker run -d --name bash-portfwd -p 8080:8080 \
+  ghcr.io/cleanstart-containers/bash:latest \
+  -c "wget -q -O /dev/null -S https://github.com 2>&1 | grep 'HTTP/'"
 ```
-
-## Environment Variables
-Configuration options available through environment variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| ENV | production | Environment mode |
-| LOG_LEVEL | info | Logging level |
-
-## Security Best Practices
-Recommended security configurations and practices
-
-
 
 ## Kubernetes Security Context
 Recommended security context for Kubernetes deployments
@@ -92,7 +71,7 @@ Essential links and resources for further information
 
 - **Container Registry**: [https://www.cleanstart.com/](https://www.cleanstart.com/)
 - **CleanStart Community Images**: [https://hub.docker.com/u/cleanstart](https://hub.docker.com/u/cleanstart)
-- **How-to-Run CleanStart images & sample projects**: [https://github.com/cleanstart-dev/cleanstart-containers](https://github.com/cleanstart-dev/cleanstart-containers)
+- **How-to-Run CleanStart images & sample projects**: [https://github.com/cleanstart-containers](https://github.com/cleanstart-containers)
   - How to run sample projects using Dockerfile
   - How to deploy via Kubernetes YAML
   - How to migrate from public images to CleanStart images
